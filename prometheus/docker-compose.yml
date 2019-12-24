@@ -1,0 +1,53 @@
+# docker-compose.yml
+version: '2'
+services:
+  prometheus:
+    # image: prom/prometheus:0.18.0
+    image: prom/prometheus:v2.14.0
+    user: root
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - revers_proxy-net
+#    ports:
+#      - '9090:9090'
+
+  node-exporter:
+    image: prom/node-exporter
+    networks:
+      - revers_proxy-net
+    # ports:
+    #   - '9100:9100'
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=password
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel
+    depends_on:
+      - prometheus
+    # ports:
+    #   - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - revers_proxy-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.localhost`)"
+      - "traefik.http.routers.grafana.entrypoints=https"
+      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+networks:
+  revers_proxy-net:
+    external:
+      name: revers_proxy-net

@@ -1,0 +1,61 @@
+logLevel = "DEBUG"
+# defaultEntryPoints = ["http", "https"]
+
+[accesslog]
+
+# WEB interface of Traefik - it will show web page with overview of frontend and backend configurations 
+[web]
+address = ":8080"
+
+[providers]
+  [providers.docker]
+    endpoint = "unix:///var/run/docker.sock"
+    exposedbydefault = false
+    network = "revers_proxy-net"
+  [providers.file]
+    directory = "/etc/traefik/"
+
+[api]
+  insecure = true
+  
+[ping]
+  entryPoint = "ping"
+
+[entryPoints.ping]
+address = ":8081"
+[entryPoints.http]
+address = ":80"  
+[entryPoints.https]
+address = ":443"
+[entryPoints.mqtt]
+address = ":1883"
+
+[certificatesResolvers.letsencrypt.acme]
+  email = "changeme@changeme.com"
+  storage = "/letsencrypt/acme.json"
+  caServer = "https://acme-v02.api.letsencrypt.org/directory"
+  [certificatesResolvers.letsencrypt.acme.httpChallenge]
+    entryPoint = "http"
+
+[http]
+  [http.routers]
+    [http.routers.dashboard]
+        rule = "Host(`traefik-ui.localhost`)"
+        middlewares = ["admin-auth"]
+        service = "api@internal"
+        entryPoints= ["https"]
+    [http.routers.dashboard.tls]
+        certResolver= "letsencrypt"
+
+[http.middlewares]
+  [http.middlewares.admin-auth.basicAuth]
+  users = [
+    "admin:$apr1$EpXVE5Yd$JLmp4ZoLqWcO226LLBwSD.",
+  ]
+  
+[entryPoints]
+  [entryPoints.metrics]
+    address = ":8082"
+[metrics]
+  [metrics.prometheus]
+    entryPoint = "metrics"

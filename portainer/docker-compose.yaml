@@ -1,0 +1,27 @@
+version: '3.5'
+
+services:
+  portainer:
+    image: portainer/portainer:latest
+    container_name: portainer
+    restart: always
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_db-data:/data
+    networks:
+      - revers_proxy-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
+      - "traefik.http.routers.portainer.entrypoints=https"
+      - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
+
+networks:
+  revers_proxy-net:
+    external:
+      name: revers_proxy-net      
+
+volumes:
+  portainer_db-data:
+    name: portainer_db-data

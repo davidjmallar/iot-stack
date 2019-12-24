@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  rabbitmq:
+    build:
+      context: ./environment/rabbitmq/
+      dockerfile: Dockerfile
+    volumes:
+      - ./environment/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    networks:
+      - revers_proxy-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq-secure.rule=Host(`rabbitmq.localhost`)"
+      - "traefik.http.services.rabbitmq-secure.loadbalancer.server.port=15672"
+      - "traefik.http.routers.rabbitmq-secure.entrypoints=https"
+      - "traefik.http.routers.rabbitmq-secure.tls.certresolver=letsencrypt"
+
+      - "traefik.tcp.routers.mqttroute.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mqttroute.entrypoints=mqtt"
+      - "traefik.tcp.routers.mqttroute.tls=true"
+      - "traefik.tcp.services.mqttroute.loadbalancer.server.port=1883"
+      
+  rabbitmq-exporter:
+    image: kbudde/rabbitmq-exporter
+    environment:
+      - RABBIT_URL=http://rabbitmq:15672
+      - RABBIT_USER=guest
+      - RABBIT_PASSWORD=guest
+      - SKIPVERIFY=true
+    networks:
+      - revers_proxy-net
+
+networks:
+  revers_proxy-net:
+    external:
+      name: revers_proxy-net

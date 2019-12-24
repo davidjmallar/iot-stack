@@ -1,0 +1,25 @@
+version: '3.5'
+
+services:
+  reverse-proxy:
+    image: traefik:latest
+    container_name: traefik
+    command:
+      - --providers.docker
+    ports:
+      - 80:80
+      - 443:443
+      - 1883:1883
+    networks:
+      - revers_proxy-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./configuration/traefik.toml:/etc/traefik/traefik.toml
+      - ./letsencrypt/:/letsencrypt/
+    healthcheck:
+      test: ["CMD", "wget", "-c", "http://localhost:8081/ping"]
+      timeout: 3s
+      retries: 3
+networks:
+  revers_proxy-net:
+    name: revers_proxy-net
