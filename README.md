@@ -10,7 +10,7 @@ This stack is based on [Docker technology](https://docs.docker.com/). That means
 ## How to start / setup
 Before start the default passwords/domains can set if you wish.
 The default password is password and the domain is localhost.
-1. First compose up the Traefik reverse-proxy. After starting it, you should be able to check it's status via the ui (with authentication admin/password) on https://traefik-ui.localhost ![traefikui](traefikui.png)
+1. First compose up the Traefik reverse-proxy. After starting it, you should be able to check it's status via the ui (with authentication admin/password) on https://traefik-ui.localhost ![traefikui](traefikui.PNG)
 
         docker-compose -f traefik/docker-compose.yml up -d
 
@@ -23,10 +23,10 @@ The default password is password and the domain is localhost.
         docker-compose -f rabbitmq/docker-compose.yml up -d
         docker-compose -f prometheus/docker-compose.yml up -d
         
-4. Connect Grafana with Prometheus ![prometheusdatasource](prometheusdatasource.png). You can now install dashboards, or create your own if you wish. You get metrics from the Traefik, RabbitMQ and the host system (via [Node-Exporter](https://hub.docker.com/r/prom/node-exporter)).
+4. Connect Grafana with Prometheus ![prometheusdatasource](prometheusdatasource.PNG). You can now install dashboards, or create your own if you wish. You get metrics from the Traefik, RabbitMQ and the host system (via [Node-Exporter](https://hub.docker.com/r/prom/node-exporter)).
 
-5. Install dashboards in grafana. On Grafana after login Dashboard->Import ![traefikdb2](traefikdb2.png)
-![traefikdb1](traefikdb1.png)
+5. Install dashboards in grafana. On Grafana after login Dashboard->Import ![traefikdb2](traefikdb2.PNG)
+![traefikdb1](traefikdb1.PNG)
 
 ## TODOs
 - [ ] Implement Elastic stack with Kibana dashboard. That will give you ability to create dashboards from data you sent over rabbitmq (mqtt as well of course). Till I integrate Elastic to this stack, you can use this cool repo: https://github.com/deviantony/docker-elk
