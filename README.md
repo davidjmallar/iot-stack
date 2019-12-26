@@ -31,6 +31,7 @@ The default password is password and the domain is localhost.
 ## TODOs
 - [ ] Implement Elastic stack with Kibana dashboard. That will give you ability to create dashboards from data you sent over rabbitmq (mqtt as well of course). Till I integrate Elastic to this stack, you can use this cool repo: https://github.com/deviantony/docker-elk
 - [ ] Make Grafana datasource setup autonomus.
+- [ ] Setup http->https redirection
 
 ## Questions
 If you have any question, you can [email](mallar.david@gmail.com) me, or connect me on [Linkedin](https://www.linkedin.com/in/david-j-mallar)
