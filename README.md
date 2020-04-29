@@ -42,7 +42,9 @@ On of the most important piece in the IOT puzzle is the message broker. We will 
         docker-compose -f rabbitmq/docker-compose.yaml up -d
         
 After composing it, the ui (yes it provides a cool broker UI) should be accessable at: https://rabbitmq.localhost (guest/guest) and you should be able to use your mqtt broker at mqtts://localhost:1883 (guest/guest)
-Important note: The rabbitmq is a custom build image, what means, if you change something in the rabbit's config you should build it again!
+
+___Important note:___ _The rabbitmq is a custom build image, what means, if you change something in the rabbit's config you should build it again!_
+
 # Elastic-Logstash-Kibana (ELK)
 If you wish you can start the ELK Stack.
 
