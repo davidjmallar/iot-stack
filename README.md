@@ -48,22 +48,28 @@ If you wish you can start the ELK Stack.
 
         docker-compose -f elk/docker-compose.yaml up -d
 
-# Change default passwords and urls
-For proper usage you might obviously want to change the classic admin/password duo in your authentication, and use the services in a server different domain than your localhost. If you already bought a domain it is easy to setup.
-|Service|Password location|url location|Note|
+The ELK Stack is the most resource hungry one in this setup. It event takes a few minutes to start. After started, you can take a look at it at https://kibana.localhost with user: elastic password: password
+
+The Logstash service is responsible for transport all the data from rabbitMQ to the elastic. If the ELK service is up, you should see every mqtt message there, in structrured format and you can create dashboards, charts etc. from that data. You can simple create your own IOT monitoring system there.
+
+# Before deploy
+For proper usage you might obviously want to change the classic admin/password duo in your authentications and use the services in a server different domain than your localhost. If you already bought a domain it is quite easy to setup.
+<!-- |Service|Password location|url location|Note|
 |---|---|---|---|
 |Traefik|traefik/configuration/traefik.toml|traefik/configuration/traefik.toml|
 |RabbitMQ-broker|rabbitmq/environment/rabbitmq/rabbitmq.conf|You can only change the port on the traefik|Do not forget to build the image again!|
 |RabbitMQ-ui|rabbitmq/docker-compose.yaml|rabbitmq/docker-compose.yaml|
 |Prometheus|prometheus/docker-compose.yaml|prometheus/docker-compose.yaml|
 |ELK-Kibana|elk/docker-compose.yaml|elk/docker-compose.yaml|
-|Portainer|Will ask when first visited|Portainer/docker-compose.yaml|When restart by any reason, it will ask for password again. That's quite dangerous! TODO|
+|Portainer|Will ask when first visited|Portainer/docker-compose.yaml|When restart by any reason, it will ask for password again. That's quite dangerous! TODO| -->
 
 # TODOs
 - [x] Implement Elastic stack with Kibana dashboard. That will give you ability to create dashboards from data you sent over rabbitmq (mqtt as well of course). Till I integrate Elastic to this stack, you can use this cool repo: https://github.com/deviantony/docker-elk
 - [ ] Make Grafana datasource setup autonomus.
 - [x] Setup http->https redirection
 - [ ] Make Portainer store password
+- [ ] Make password/user change easier
+- [ ] Make Domain change easier
 
-# Questions
+# Still questions?
 If you have any question, suggestion, you can [email](mallar.david@gmail.com) me, or connect me on [Linkedin](https://www.linkedin.com/in/david-j-mallar)
