@@ -1,6 +1,11 @@
 # iot-stack
-This is an easily setupable dockerized Iot stack based on RabbitMQ message queue, with monitoring and security features.
-This stack will give you a functional rabbitmq with secure mqtt endpoint and grafana metrics.
+This is an easy to setup dockerized IOT stack, based on RabbitMQ message queue, with monitoring and security features.
+This stack will give you a functional
+- Traefik reverse proxy. with LetsEncrypt wildcard certificates.
+- RabbitMQ with AMQP, MQTT endpoints
+- Elastic (ELK) stack, what by default connected with the RabbitMQ. (You can monitor and create dashboards based on your MQTT messages)
+- Grafana + Promethetus stack with metrics from the system, the RabbitMQ and the reverse proxy
+- Portainer for better docker experience
 
 ![Architecture diagram](architecture.png)
 
