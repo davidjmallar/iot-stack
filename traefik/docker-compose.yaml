@@ -10,6 +10,7 @@ services:
       - 80:80
       - 443:443
       - 1883:1883
+      - 5672:5672
     networks:
       - revers_proxy-net
     volumes:

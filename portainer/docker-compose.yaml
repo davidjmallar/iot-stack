@@ -13,10 +13,13 @@ services:
       - revers_proxy-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
-      - "traefik.http.routers.portainer.entrypoints=https"
-      - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.portainer-secure.rule=Host(`portainer.localhost`)"
+      - "traefik.http.routers.portainer-secure.entrypoints=https"
+      - "traefik.http.routers.portainer-secure.tls.certresolver=letsencrypt"
 
+      - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
+      - "traefik.http.routers.portainer.entrypoints=http"
+      - "traefik.http.routers.portainer.middlewares=redirect@file"
 networks:
   revers_proxy-net:
     external:

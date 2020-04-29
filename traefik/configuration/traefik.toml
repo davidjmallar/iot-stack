@@ -1,5 +1,4 @@
-logLevel = "DEBUG"
-# defaultEntryPoints = ["http", "https"]
+logLevel = "WARN"
 
 [accesslog]
 
@@ -29,6 +28,8 @@ address = ":80"
 address = ":443"
 [entryPoints.mqtt]
 address = ":1883"
+[entryPoints.amqp]
+address = ":5672"
 
 [certificatesResolvers.letsencrypt.acme]
   email = "changeme@changeme.com"
@@ -52,7 +53,9 @@ address = ":1883"
   users = [
     "admin:$apr1$EpXVE5Yd$JLmp4ZoLqWcO226LLBwSD.",
   ]
-  
+  [http.middlewares.redirect.redirectScheme]
+    scheme = "https"
+    
 [entryPoints]
   [entryPoints.metrics]
     address = ":8082"

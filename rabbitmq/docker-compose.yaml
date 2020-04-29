@@ -12,15 +12,25 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rabbitmq-secure.rule=Host(`rabbitmq.localhost`)"
-      - "traefik.http.services.rabbitmq-secure.loadbalancer.server.port=15672"
       - "traefik.http.routers.rabbitmq-secure.entrypoints=https"
       - "traefik.http.routers.rabbitmq-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.rabbitmq-secure.loadbalancer.server.port=15672"
+
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.localhost`)"
+      - "traefik.http.routers.rabbitmq.entrypoints=http"
+      - "traefik.http.routers.rabbitmq.middlewares=redirect@file"
 
       - "traefik.tcp.routers.mqttroute.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mqttroute.entrypoints=mqtt"
       - "traefik.tcp.routers.mqttroute.tls=true"
-      - "traefik.tcp.services.mqttroute.loadbalancer.server.port=1883"
-      
+      - "traefik.tcp.routers.mqttroute.service=mqttservices"
+      - "traefik.tcp.services.mqttservices.loadbalancer.server.port=1883"
+
+      - "traefik.tcp.routers.amqproute.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.amqproute.entrypoints=amqp"
+      - "traefik.tcp.routers.amqproute.tls=true"
+      - "traefik.tcp.routers.amqproute.service=amqpservice"
+      - "traefik.tcp.services.amqpservice.loadbalancer.server.port=5672"
   rabbitmq-exporter:
     image: kbudde/rabbitmq-exporter
     environment:

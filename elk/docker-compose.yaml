@@ -1,0 +1,63 @@
+version: '2'
+
+services:
+
+  elasticsearch:
+    image: elasticsearch:7.6.2
+    restart: always    
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./var/lib/elastic/data:/usr/share/elasticsearch/data
+    # ports:
+      # - "9200:9200"
+      # - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx2g -Xms2g"
+      ELASTIC_PASSWORD: password
+    networks:
+      - elk
+
+  logstash:
+    image: logstash:7.6.2
+    restart: always
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    # ports:
+      # - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx1g -Xms1g"
+    networks:
+      - elk
+      - revers_proxy-net
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:7.6.2
+    restart: always    
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    # ports:
+      # - "5601:5601"
+    networks:
+      - elk
+      - revers_proxy-net
+    depends_on:
+      - elasticsearch
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kibana-secure.rule=Host(`kibana.localhost`)"
+      - "traefik.http.routers.kibana-secure.entrypoints=https"
+      - "traefik.http.routers.kibana-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.kibana-secure.loadbalancer.server.port=5601"
+      
+      - "traefik.http.routers.kibana.rule=Host(`kibana.localhost`)"
+      - "traefik.http.routers.kibana.entrypoints=http"
+      - "traefik.http.routers.kibana.middlewares=redirect@file"
+networks:
+  elk:
+    driver: bridge
+  revers_proxy-net:
+    external:
+      name: revers_proxy-net      

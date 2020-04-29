@@ -38,11 +38,14 @@ services:
       - revers_proxy-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.localhost`)"
-      - "traefik.http.routers.grafana.entrypoints=https"
-      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
-      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grafana-secure.rule=Host(`grafana.localhost`)"
+      - "traefik.http.routers.grafana-secure.entrypoints=https"
+      - "traefik.http.routers.grafana-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.grafana-secure.loadbalancer.server.port=3000"
 
+      - "traefik.http.routers.grafana.rule=Host(`grafana.localhost`)"
+      - "traefik.http.routers.grafana.entrypoints=http"
+      - "traefik.http.routers.grafana.middlewares=redirect@file"
 volumes:
   prometheus_data: {}
   grafana_data: {}

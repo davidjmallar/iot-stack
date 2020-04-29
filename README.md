@@ -7,31 +7,63 @@ This stack will give you a functional rabbitmq with secure mqtt endpoint and gra
 ## Before start
 This stack is based on [Docker technology](https://docs.docker.com/). That means you can start or stop these systems anytime you want, or run it on an other system and the same setup will start.
 
-## How to start / setup
-Before start the default passwords/domains can set if you wish.
-The default password is password and the domain is localhost.
-1. First compose up the Traefik reverse-proxy. After starting it, you should be able to check it's status via the ui (with authentication admin/password) on https://traefik-ui.localhost ![traefikui](traefikui.PNG)
 
-        docker-compose -f traefik/docker-compose.yml up -d
+# Traefik
+First compose up the Traefik reverse-proxy.
 
-2. (optional) Then start the Portainer if you wish. After starting, you should be able to access it on https://portainer.localhost by default and it will ask you to create the default user.
+        docker-compose -f traefik/docker-compose.yaml up -d
 
-        docker-compose -f portainer/docker-compose.yml up -d
+This will start an instance of the Traefik. This service will handle the security, and reverse proxy stuff. Now You should be able to check it's status via the ui (authentication is admin/password by default) on https://traefik-ui.localhost
+![traefikui](traefikui.PNG)
+
+# Portainer
+If you wish, You can start the [portainer](https://www.portainer.io/), what is a fancy tool for monitoring your docker services. This is quite optional, but why not eh?
+
+        docker-compose -f portainer/docker-compose.yaml up -d
         
-3. After, the Prometheus stack and Rabbitmq stacks can start as well. You should be able to access them on https://rabbitmq.localhost (guest/guest) and https://grafana.localhost (admin/password)
+It should be accessable via https://portainer.localhost by default. At the first visit it will ask you to create the default user, so you can set the user/password here.
 
-        docker-compose -f rabbitmq/docker-compose.yml up -d
-        docker-compose -f prometheus/docker-compose.yml up -d
+# Prometheus stack
+Prometheus stack is also extremely useful for monitoring. It is not that resource hungry in my opinion, so worth running it. 
+
+        docker-compose -f prometheus/docker-compose.yaml up -d
         
-4. Connect Grafana with Prometheus ![prometheusdatasource](prometheusdatasource.PNG). You can now install dashboards, or create your own if you wish. You get metrics from the Traefik, RabbitMQ and the host system (via [Node-Exporter](https://hub.docker.com/r/prom/node-exporter)).
+This will start the grafana tool here: https://grafana.localhost The default password is (admin/password).
+You should connect Grafana with Prometheus by hand like this: ![prometheusdatasource](prometheusdatasource.PNG).
+After succesfull connection you can now install dashboards, or create your own if you wish. You get metrics from the Traefik, RabbitMQ and the host system by default.
 
-5. Install dashboards in grafana. On Grafana after login Dashboard->Import ![traefikdb2](traefikdb2.PNG)
+After installing some dashboards in grafana you can see things like this: ![traefikdb2](traefikdb2.PNG)
 ![traefikdb1](traefikdb1.PNG)
+If you dig yourself a little bit into the prometheus/grafana topic you can easily create fancy dashboards here about your server hardware/mqtt/api usage here.
 
-## TODOs
-- [ ] Implement Elastic stack with Kibana dashboard. That will give you ability to create dashboards from data you sent over rabbitmq (mqtt as well of course). Till I integrate Elastic to this stack, you can use this cool repo: https://github.com/deviantony/docker-elk
+# RabbitMQ
+On of the most important piece in the IOT puzzle is the message broker. We will not use the common Mosquitto broker here, but a more powerful one, the RabbitMQ. By default the RabbitMQ is a AMQP broker, what is a different message protocol than the MQTT, but we can enable the MQTT as well. For start the secure and ready to use mqtt broker, just compose it up like this:
+
+        docker-compose -f rabbitmq/docker-compose.yaml up -d
+        
+After composing it, the ui (yes it provides a cool broker UI) should be accessable at: https://rabbitmq.localhost (guest/guest) and you should be able to use your mqtt broker at mqtts://localhost:1883 (guest/guest)
+Important note: The rabbitmq is a custom build image, what means, if you change something in the rabbit's config you should build it again!
+# Elastic-Logstash-Kibana (ELK)
+If you wish you can start the ELK Stack.
+
+        docker-compose -f elk/docker-compose.yaml up -d
+
+# Change default passwords and urls
+For proper usage you might obviously want to change the classic admin/password duo in your authentication, and use the services in a server different domain than your localhost. If you already bought a domain it is easy to setup.
+|Service|Password location|url location|Note|
+|---|---|---|---|
+|Traefik|traefik/configuration/traefik.toml|traefik/configuration/traefik.toml|
+|RabbitMQ-broker|rabbitmq/environment/rabbitmq/rabbitmq.conf|You can only change the port on the traefik|Do not forget to build the image again!|
+|RabbitMQ-ui|rabbitmq/docker-compose.yaml|rabbitmq/docker-compose.yaml|
+|Prometheus|prometheus/docker-compose.yaml|prometheus/docker-compose.yaml|
+|ELK-Kibana|elk/docker-compose.yaml|elk/docker-compose.yaml|
+|Portainer|Will ask when first visited|Portainer/docker-compose.yaml|When restart by any reason, it will ask for password again. That's quite dangerous! TODO|
+
+# TODOs
+- [x] Implement Elastic stack with Kibana dashboard. That will give you ability to create dashboards from data you sent over rabbitmq (mqtt as well of course). Till I integrate Elastic to this stack, you can use this cool repo: https://github.com/deviantony/docker-elk
 - [ ] Make Grafana datasource setup autonomus.
-- [ ] Setup http->https redirection
+- [x] Setup http->https redirection
+- [ ] Make Portainer store password
 
-## Questions
-If you have any question, you can [email](mallar.david@gmail.com) me, or connect me on [Linkedin](https://www.linkedin.com/in/david-j-mallar)
+# Questions
+If you have any question, suggestion, you can [email](mallar.david@gmail.com) me, or connect me on [Linkedin](https://www.linkedin.com/in/david-j-mallar)
