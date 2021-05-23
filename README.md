@@ -78,5 +78,7 @@ For proper usage you might obviously want to change the classic admin/password d
 - [ ] Make password/user change easier
 - [ ] Make Domain change easier
 
+- [ ] fix Rabbitmq - remove ports , copy config instead of volume, healthcheck
+
 # Still questions?
 If you have any question, suggestion, you can [email](mallar.david@gmail.com) me, or connect me on [Linkedin](https://www.linkedin.com/in/david-j-mallar)

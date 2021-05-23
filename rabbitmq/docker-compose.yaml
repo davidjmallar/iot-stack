@@ -9,6 +9,9 @@ services:
       - ./environment/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     networks:
       - revers_proxy-net
+    ports:
+      - 15672:15672
+      - 5672:5672
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rabbitmq-secure.rule=Host(`rabbitmq.localhost`)"
