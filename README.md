@@ -7,7 +7,9 @@ This stack will give you a functional
 - Grafana + Promethetus stack with metrics from the system, the RabbitMQ and the reverse proxy
 - Portainer for better docker experience
 
-![Architecture diagram](architecture.png)
+_Note: when hosting at localhost, the certificate may be invalid, but hosting on a server with real domain will generate you valid certificates with LetsEncrypt_
+
+![Architecture diagram](data/architecture.png)
 
 ## Before start
 This stack is based on [Docker technology](https://docs.docker.com/). That means you can start or stop these systems anytime you want, or run it on an other system and the same setup will start.
@@ -19,7 +21,7 @@ First compose up the Traefik reverse-proxy.
         docker-compose -f traefik/docker-compose.yaml up -d
 
 This will start an instance of the Traefik. This service will handle the security, and reverse proxy stuff. Now You should be able to check it's status via the ui (authentication is admin/password by default) on https://traefik-ui.localhost
-![traefikui](traefikui.PNG)
+![traefikui](data/traefikui.PNG)
 
 # Portainer
 If you wish, You can start the [portainer](https://www.portainer.io/), what is a fancy tool for monitoring your docker services. This is quite optional, but why not eh?
@@ -34,12 +36,13 @@ Prometheus stack is also extremely useful for monitoring. It is not that resourc
         docker-compose -f prometheus/docker-compose.yaml up -d
         
 This will start the grafana tool here: https://grafana.localhost The default password is (admin/password).
-You should connect Grafana with Prometheus by hand like this: ![prometheusdatasource](prometheusdatasource.PNG).
+You should connect Grafana with Prometheus manually like this: ![prometheusdatasource](data/prometheusdatasource.PNG).
 After succesfull connection you can now install dashboards, or create your own if you wish. You get metrics from the Traefik, RabbitMQ and the host system by default.
 
-After installing some dashboards in grafana you can see things like this: ![traefikdb2](traefikdb2.PNG)
-![traefikdb1](traefikdb1.PNG)
+After installing some dashboards in grafana you can see things like this:
 If you dig yourself a little bit into the prometheus/grafana topic you can easily create fancy dashboards here about your server hardware/mqtt/api usage here.
+![traefikdb2](data/traefikdb2.PNG)
+![traefikdb1](data/traefikdb1.PNG)
 
 # RabbitMQ
 On of the most important piece in the IOT puzzle is the message broker. We will not use the common Mosquitto broker here, but a more powerful one, the RabbitMQ. By default the RabbitMQ is a AMQP broker, what is a different message protocol than the MQTT, but we can enable the MQTT as well. For start the secure and ready to use mqtt broker, just compose it up like this:
@@ -50,6 +53,8 @@ After composing it, the ui (yes it provides a cool broker UI) should be accessab
 
 ___Important note:___ _The rabbitmq is a custom build image, what means, if you change something in the rabbit's config you should build it again!_
 
+![kibanadashboard](data/rabbit_dashboard.png)
+
 # Elastic-Logstash-Kibana (ELK)
 If you wish you can start the ELK Stack.
 
@@ -58,6 +63,8 @@ If you wish you can start the ELK Stack.
 The ELK Stack is the most resource hungry one in this setup. It event takes a few minutes to start. After started, you can take a look at it at https://kibana.localhost with user: elastic password: password
 
 The Logstash service is responsible for transport all the data from rabbitMQ to the elastic. If the ELK service is up, you should see every mqtt message there, in structrured format and you can create dashboards, charts etc. from that data. You can simple create your own IOT monitoring system there.
+
+![kibanadashboard](data/kibana_dashboard.png)
 
 # Before deploy
 For proper usage you might obviously want to change the classic admin/password duo in your authentications and use the services in a server different domain than your localhost. If you already bought a domain it is quite easy to setup.
